@@ -9,22 +9,6 @@ app = Flask(__name__)
 domains = {r'http://localhost:5000/':'main',r'http://www.localhost:5000/':'main',r'http://blog.localhost:5000/': 'blog',r'http://cdn.localhost:5000/': 'cdn'}
 statusCodePages = {404: "<h1>Error 404: Not found</h1>"}
 
-def _unsafe_markdown_to_html(markdown):
-    # Convert Markdown to HTML
-    html = re.sub(r'^(#{1})\s(.+)$', r'<h1 class="title">\2</h1>', markdown, flags=re.MULTILINE)
-    html = re.sub(r'^(#{2,})\s(.+)$', r'<h2 class="subtitle">\2</h2>', html, flags=re.MULTILINE)
-    html = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', html)
-    html = re.sub(r'\[(.*?)\]\[(.*?)\]', r'<a href="#\2">\1</a>', html)
-    html = re.sub(r'\[(.*?)\]:\s*(.*?)$', r'<a href="\2" id="\1"></a>', html, flags=re.MULTILINE)
-    html = re.sub(r'^(?!\s*$)(.+)$', r'<p>\1</p>', html, flags=re.MULTILINE)
-    html = re.sub(r'```(.*?)\n(.*?)\n```', r'<code class="codeblock">\2</code>', html, flags=re.DOTALL)
-    html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
-    html = re.sub(r'\*(.*?)\*', r'<em>\1</em>', html)
-    html = re.sub(r'`([^`]+)`', r'<code>\1</code>', html)
-    wow = "<html><link rel=\"stylesheet\" type=\"text/css\" href=\"/styles.css\" /> <title> Thecoolcat's blog</title> </head><body>"
-    wow2 = "</body></html>"
-    return wow + html + wow2
-
 def remove_header(md_text):
     pattern = r'^---[\s\S]*?^---\n'
     return re.sub(pattern, '', md_text, flags=re.MULTILINE)
@@ -41,22 +25,6 @@ def make_box(url, title, desc):
 
 def extract_title(meta):
     return meta['title'][0]
-
-#def extract_desc_text(markdown):
-    ## Find title
-    #title_match = re.search(r'^#\s(.+)$', markdown, re.MULTILINE)
-    #if title_match:
-        #title = title_match.group(1)
-    #else:
-        #return "Title not found"
-    
-    ## Find italicized text
-    #italicized_text_match = re.search(r'^##\s(.+)$', #markdown[title_match.end():], re.MULTILINE)
-    #if italicized_text_match:
-        #italicized_text = italicized_text_match.group(1)
-        #return italicized_text
-    #else:
-        #return "Italicized text not found"
 
 def status(code,isCustom=False,custom="There was an error"):
     if isCustom:
