@@ -1,0 +1,4 @@
+.venv/
+cta/
+blogposts/
+__pycache__/

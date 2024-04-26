@@ -1,0 +1,73 @@
+/* Set default font to PT Mono */
+body {
+  font-family: 'PT Mono', monospace;
+}
+
+/* Set background color to dark grey */
+body {
+  background-color: #222222;
+}
+
+/* Set background color for code blocks to darker grey */
+code {
+  background-color: #111111;
+}
+
+/* Set default text color to white */
+body {
+  color: white;
+}
+
+/* Set 'title' class to bold */
+h1 {
+  font-weight: bold;
+}
+
+/* Round the background of the text */
+body {
+  border-radius: 10px;
+}
+
+/* for posts */
+.post {
+  padding: 20px;
+  background-color: #111111;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.post:hover {
+  background-color: #010101; /* Brighten color on hover */
+}
+
+.page-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 16px;
+}
+
+.post-link {
+  text-decoration: none; /* Remove underline on link */
+  color: inherit; /* Inherit text color */
+}
+
+button {
+  padding: 10px;
+  background-color: #111111;
+  border-radius: 15px;
+  text-decoration: none
+  box-shadow: none;
+  transition: background-color 0.3s ease;
+}
+
+.button-link {
+  text-decoration: none; /* Remove underline on link */
+  color: white;
+  box-shadow: none;
+}
+
+button:hover {
+  background-color: #010101;
