@@ -4,10 +4,16 @@ import re
 import os
 import random
 import markdown
+import json
 
 app = Flask(__name__)
-domains = {r'http://localhost:5000/':'main',r'http://www.localhost:5000/':'main',r'http://blog.localhost:5000/': 'blog',r'http://cdn.localhost:5000/': 'cdn'}
-statusCodePages = {404: "<h1>Error 404: Not found</h1>"}
+with open('domains.json') as infile:
+    domains1 = json.load(infile)
+domains = {}
+for x in domains1:
+    domains['http://'+x+'/'] = domains1[x]
+    domains['https://'+x+'/'] = domains1[x]
+# statusCodePages = {404: "<h1>Error 404: Not found</h1>"}
 
 def remove_header(md_text):
     pattern = r'^---[\s\S]*?^---\n'
@@ -118,3 +124,8 @@ def cta():
         return send_file("cta/"+file)
     else:
         return status(404)
+
+@app.errorhandler(404)
+def notFound(e):
+    with open('statuspages/404.html') as page:
+        return page.read()
