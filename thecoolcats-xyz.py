@@ -49,6 +49,12 @@ def extract_desc_text(meta):
     except:
         return None
 
+def extract_date(markdown_string):
+    md = markdown.Markdown(extensions=["meta"])
+    md.convert(markdown_string)
+    meta = md.Meta
+    return meta['date']
+
 def remove_md_extension(file_name):
     # pattern = r'\/?([^\/]+)\.md$'
     pattern = r'([^\\\/]+?)(?:\.md)?$'
@@ -59,12 +65,16 @@ def remove_md_extension(file_name):
         return file_name
 
 def get_pages(directory='blogposts'):
-    pages = []
+    pages = {}
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
         if os.path.isfile(f):
-            pages.append(f)
-    return pages
+            with open(f) as wow:
+                pages[f] = extract_date(wow.read())
+    ordered = {k: v for k, v in sorted(pages.items(), key=lambda item: item[1])}
+    ordered = list(ordered.keys())
+    ordered.reverse()
+    return ordered
 
 def blog_main_page():
     pages = get_pages()
@@ -124,6 +134,10 @@ def cta():
         return send_file("cta/"+file)
     else:
         return status(404)
+
+@app.get('/funny-clip.mp4')
+def desjardins():
+    return send_file('desjardins.mp4')
 
 @app.errorhandler(404)
 def notFound(e):
