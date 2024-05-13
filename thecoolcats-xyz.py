@@ -1,4 +1,4 @@
-from flask import Flask, request, abort, send_file, Response
+from flask import Flask, request, abort, send_file, Response, redirect
 from markupsafe import escape
 import re
 import os
@@ -19,9 +19,9 @@ def remove_header(md_text):
     pattern = r'^---[\s\S]*?^---\n'
     return re.sub(pattern, '', md_text, flags=re.MULTILINE)
 
-def markdown_to_html(markdown_str):
+def markdown_to_html(markdown_str, title='Thecoolcat\'s blog'):
     html = markdown.markdown(remove_header(markdown_str))
-    wow = '<html><link rel="stylesheet" type="text/css" href="/styles.css" /> <title>' + "Thecoolcat's blog</title> </head><body>"
+    wow = f'<html><link rel="stylesheet" type="text/css" href="/styles.css" /> <title>{title}</title> </head><body>'
     wow2 = "</body></html>"
     return wow + html + wow2
 
@@ -143,3 +143,24 @@ def desjardins():
 def notFound(e):
     with open('statuspages/404.html') as page:
         return page.read()
+
+@app.get('/amogpl')
+def amogpl():
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'main':
+        with open('amogpl.md') as file:
+            return markdown_to_html(file.read(), 'Amogus Sussy Baka Public License')
+    else:
+        return status(404)
+
+@app.get('/amogpl/<version>')
+def amogplWVersion(version):
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'main':
+        try:
+            with open('amogpl/'+escape(version)) as file:
+                return markdown_to_html(file.read(), 'Amogus Sussy Baka Public License Version '+escape(version))
+        except FileNotFoundError:
+            return redirect('/amogpl')
+    else:
+        return status(404)
