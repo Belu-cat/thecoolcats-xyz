@@ -1,7 +1,7 @@
 # Amogus Sussy Baka Public License (AMOGPL)
 ***Version 1.1, May of MMXXIV***
 
-*Copyright (C) YYYY CopyrightHolder <Copyright-Domain\>*
+*Copyright (C) 2024 Thecoolcats <thecoolcats.xyz\>*
 
 ## Definitions:
 
