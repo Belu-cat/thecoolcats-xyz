@@ -164,3 +164,10 @@ def amogplWVersion(version):
             return redirect('/amogpl')
     else:
         return status(404)
+
+@app.get('/pgp')
+def pgpPublicSig():
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'main':
+        with open('pgp.pgp') as file:
+            return f'<html><head><link rel="stylesheet" type="text/css" href="/styles.css"> <title>Thecoolcat\'s PGP key</title> </head><body><h1>pgp public key</h1>{file.read()}</body></html>'
