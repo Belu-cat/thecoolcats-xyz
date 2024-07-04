@@ -135,6 +135,20 @@ def cta():
     else:
         return status(404)
 
+@app.get('/cta/<img>')
+def ctaImg(img):
+    pageUrl = domains[request.url_root]
+    if (pageUrl == 'cdn') or (pageUrl == 'main') or (pageUrl == 'blog'):
+        file = f"{img}.jpg"
+        if file in os.listdir("cta/"):
+            print("cta/"+file)
+            return send_file("cta/"+file)
+        else:
+            return status(404)
+    else:
+        return status(404)
+    return status(404)
+
 @app.get('/funny-clip.mp4')
 def desjardins():
     return send_file('desjardins.mp4')

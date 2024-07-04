@@ -3,3 +3,4 @@ cta/
 blogposts/
 __pycache__/
 pgp.pgp
+env
