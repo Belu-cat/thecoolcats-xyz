@@ -101,6 +101,32 @@ def main():
     elif pageUrl == 'blog':
         return blog_main_page()
 
+@app.route("/main/<filename>")
+def cdnmain(filename):
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'cdn':
+        with open('cdn-index.json') as file:
+            cdnIndex = json.load(file)
+        try:
+            return send_file('cdn-main/'+cdnIndex[filename])
+        except KeyError:
+            return status(404)
+    else:
+        return status(404)
+
+@app.route("/main/<foldername>/<filename>")
+def cdnmainfolder(foldername, filename):
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'cdn':
+        with open('cdn-index.json') as file:
+            cdnIndex = json.load(file)
+        try:
+            return send_file('cdn-main/'+cdnIndex[f"{foldername}/{filename}"])
+        except KeyError:
+            return status(404)
+    else:
+        return status(404)
+
 @app.route('/blog_only')
 def blog_only():
     pageUrl = domains[request.url_root]

@@ -4,3 +4,5 @@ blogposts/
 __pycache__/
 pgp.pgp
 env
+cdn-main/
+cdn-index.json
