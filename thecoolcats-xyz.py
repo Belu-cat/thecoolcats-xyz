@@ -9,6 +9,8 @@ import json
 app = Flask(__name__)
 with open('domains.json') as infile:
     domains1 = json.load(infile)
+with open('ssi-webring.html') as file:
+    webring = file.read()
 domains = {}
 for x in domains1:
     domains['http://'+x+'/'] = domains1[x]
@@ -88,6 +90,7 @@ def blog_main_page():
              meta = md.Meta
              mainPage += make_box('posts/'+name,extract_title(meta),extract_desc_text(meta))
              mainPage += '<br>'
+    mainPage += webring
     mainPage += '</body></html>'
     return Response(mainPage, status=200)
 
@@ -142,7 +145,7 @@ def blog_post(post):
         try:
              with open('blogposts/'+escape(post)+'.md') as post:
                  markdown_str = post.read()
-             return Response(markdown_to_html(markdown_str), status=200)
+             return Response(markdown_to_html(markdown_str)+webring, status=200)
         except:
             return status(404)
     else:
