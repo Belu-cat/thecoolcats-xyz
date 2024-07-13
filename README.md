@@ -3,7 +3,9 @@ This is the source code for my personal website, available at https://thecoolcat
 
 ## Deployment
 First, clone this repository
-```git clone https://github.com/Belu-cat/thecoolcats-xyz```
+```
+git clone https://github.com/Belu-cat/thecoolcats-xyz
+```
 
 Then, set up the virtual enviorment
 ```
