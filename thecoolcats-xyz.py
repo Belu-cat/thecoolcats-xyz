@@ -178,6 +178,17 @@ def blog_post(post):
     else:
         return status(404)
 
+@app.route('/posts/')
+def blog_post(post):
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'blog':
+        try:
+             return Response('<br>'.join(os.listdir('blogposts')), status=200)
+        except:
+            return status(404)
+    else:
+        return status(404)
+
 @app.get('/styles.css')
 def css():
     return send_file("thecoolcats-xyz.css")
