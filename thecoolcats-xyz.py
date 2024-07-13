@@ -179,7 +179,7 @@ def blog_post(post):
         return status(404)
 
 @app.route('/posts/')
-def blogindx(post):
+def blogindx():
     pageUrl = domains[request.url_root]
     if pageUrl == 'blog':
         try:
