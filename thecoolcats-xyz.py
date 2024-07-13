@@ -103,6 +103,18 @@ def main():
         return Response(page, status=200)
     elif pageUrl == 'blog':
         return blog_main_page()
+    else:
+        return status(404)
+
+@app.route("/contact")
+def contact():
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'main':
+        with open('contact.html') as contactHTML:
+            page = contactHTML.read()
+        return Response(page, status=200)
+    else:
+        return status(404)
 
 @app.route("/main/<filename>")
 def cdnmain(filename):
@@ -114,6 +126,21 @@ def cdnmain(filename):
             return send_file('cdn-main/'+cdnIndex[filename])
         except KeyError:
             return status(404)
+    else:
+        return status(404)
+
+@app.route("/main/")
+def cdnindex():
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'cdn':
+        with open('cdn-index.json') as file:
+            cdnIndex = json.load(file)
+        index = "<html><head><title>Thecoolcats CDN Index</title></head><body>"
+        for x in cdnIndex.values():
+            index += x
+            index += '<br>'
+        index += "</body></html>"
+        return index
     else:
         return status(404)
 
@@ -164,6 +191,17 @@ def cta():
     else:
         return status(404)
 
+@app.get('/cta/indx')
+def ctaindx():
+    pageUrl = domains[request.url_root]
+    if (pageUrl == 'cdn') or (pageUrl == 'main') or (pageUrl == 'blog'):
+        cool = []
+        for x in os.listdir('cta/'):
+            cool.append(x.removesuffix('.png').removesuffix('.jpg'))
+        return '<br>'.join(cool)
+    else:
+        return status(404)
+
 @app.get('/cta/<img>')
 def ctaImg(img):
     pageUrl = domains[request.url_root]
@@ -193,6 +231,14 @@ def amogpl():
     if pageUrl == 'main':
         with open('amogpl.md') as file:
             return markdown_to_html(file.read(), 'Amogus Sussy Baka Public License')
+    else:
+        return status(404)
+
+@app.get('/amogpl/indx')
+def amogplindx():
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'main':
+        return '<br>'.join(os.listdir('blogposts/'))
     else:
         return status(404)
 
