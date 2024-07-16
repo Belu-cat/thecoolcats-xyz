@@ -6,3 +6,5 @@ pgp.pgp
 env
 cdn-main/
 cdn-index.json
+key.pem
+cert.pem

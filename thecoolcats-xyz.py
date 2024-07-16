@@ -16,6 +16,12 @@ for x in domains1:
     domains['http://'+x+'/'] = domains1[x]
     domains['https://'+x+'/'] = domains1[x]
 # statusCodePages = {404: "<h1>Error 404: Not found</h1>"}
+langs = ['en', 'tp']
+langWebrings = {}
+for lang in langs:
+    if lang != 'en':
+        with open(f'langs/{lang}/ssi-webring.html') as file:
+            langWebrings[lang] = file.read()
 
 def remove_header(md_text):
     pattern = r'^---[\s\S]*?^---\n'
@@ -78,33 +84,57 @@ def get_pages(directory='blogposts'):
     ordered.reverse()
     return ordered
 
-def blog_main_page():
+def blog_main_page(lang1):
     pages = get_pages()
-    with open('blogStart.html') as blogStart:
+    blogpostdir = 'blogposts/'
+    postsdir = 'posts/'
+    lang = lang1
+    if lang in langs and lang != 'en':
+        pages = get_pages(f'langs/{lang}/blogposts')
+        blogpostdir = f'langs/{lang}/blogposts/'
+        postsdir = f'posts/{lang}/'
+    else:
+        lang = 'en'
+    blogStartFile = 'blogStart.html'
+    if lang in langs and lang != 'en':
+        blogStartFile = f'langs/{lang}/blogStart.html'
+    with open(blogStartFile) as blogStart:
         mainPage = blogStart.read()
     for x in pages:
         name = remove_md_extension(x)
-        with open('blogposts/'+escape(name)+'.md') as page:
+        with open(blogpostdir+escape(name)+'.md') as page:
              md = markdown.Markdown(extensions=["meta"])
              md.convert(page.read())
              meta = md.Meta
-             mainPage += make_box('posts/'+name,extract_title(meta),extract_desc_text(meta))
+             mainPage += make_box(postsdir+name,extract_title(meta),extract_desc_text(meta))
              mainPage += '<br>'
-    mainPage += webring
+    if lang == 'en':
+       mainPage += webring
+    else:
+        mainPage += langWebrings[lang]
     mainPage += '</body></html>'
     return Response(mainPage, status=200)
 
 @app.route("/")
 def main():
     pageUrl = domains[request.url_root]
+    lang = request.cookies.get('lang')
     if pageUrl == 'main':
-        with open('main.html') as mainHtml:
+        mainfile = 'main.html'
+        if lang in langs and lang != 'en':
+            mainfile = f'langs/{lang}/main.html'
+        with open(mainfile) as mainHtml:
             page = mainHtml.read()
-        return Response(page, status=200)
+        resp = Response(page, status=200)
     elif pageUrl == 'blog':
-        return blog_main_page()
+        resp = blog_main_page(lang)
     else:
         return status(404)
+    if lang in langs:
+        lang = request.cookies.get('lang')
+    else:
+        resp.set_cookie(key='lang', value='en')
+    return resp
 
 @app.route("/contact")
 def contact():
@@ -178,6 +208,19 @@ def blog_post(post):
     else:
         return status(404)
 
+@app.route('/posts/<lang>/<post>')
+def blogpostlang(lang, post):
+    pageUrl = domains[request.url_root]
+    if pageUrl == 'blog':
+        try:
+             with open(f'langs/{lang}/blogposts/'+escape(post)+'.md') as post:
+                 markdown_str = post.read()
+             return Response(markdown_to_html(markdown_str)+langWebrings[lang], status=200)
+        except:
+            resp = status(404)
+    else:
+        resp = status(404)
+
 @app.route('/posts/')
 def blogindx():
     pageUrl = domains[request.url_root]
@@ -192,6 +235,17 @@ def blogindx():
 @app.get('/styles.css')
 def css():
     return send_file("thecoolcats-xyz.css")
+
+@app.get('/lang/')
+def setlangfront():
+    with open('langpage.html') as file:
+        return file.read()
+
+@app.get('/lang/set/<lang>')
+def setlang(lang):
+    resp = redirect("/")
+    resp.set_cookie(key='lang', value=lang)
+    return resp
 
 @app.get('/cta')
 def cta():
