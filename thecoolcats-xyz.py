@@ -211,7 +211,7 @@ def blog_post(post):
 @app.route('/posts/<lang>/<post>')
 def blogpostlang(lang, post):
     pageUrl = domains[request.url_root]
-    if pageUrl == 'blog':
+    if pageUrl == 'blog' and lang in langs:
         try:
              with open(f'langs/{lang}/blogposts/'+escape(post)+'.md') as post:
                  markdown_str = post.read()
